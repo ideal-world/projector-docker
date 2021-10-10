@@ -1,0 +1,44 @@
+name: Docker Publish
+
+on:
+  push:
+    branches: ['release']
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: idea-world/idea
+  TAG: 2020.3.4
+  DOWNLOAD_LINK: https://download.jetbrains.com/idea/ideaIU-2020.3.4.tar.gz
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: projector-docker
+
+      - name: Checkout server repo
+        uses: actions/checkout@v2
+        with:
+          repository: ideal-world/projector-server
+          path: projector-server
+
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push
+        run: |
+          cd projector-docker
+          ./build-container.sh ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} ${{ env.DOWNLOAD_LINK }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
