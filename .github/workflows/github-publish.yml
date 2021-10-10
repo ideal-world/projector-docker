@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: idea-world/idea
+  IMAGE_NAME: ideal-world/idea
   TAG: 2020.3.4
   DOWNLOAD_LINK: https://download.jetbrains.com/idea/ideaIU-2020.3.4.tar.gz
 
